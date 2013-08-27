@@ -1,0 +1,20 @@
+br.jus.portal_transparencia
+************************************************************************
+
+Cliente para para consumir dados do `Portal Transparência`_ do Judiciário
+Brasileiro
+
+TODO
+----
+* ``faseDespesa`` ainda hardcoded
+* ``orgaoSuperior`` ainda hardcoded
+* ``unidadeOrcamentaria`` ainda hardcoded
+* ``unidadeGestora`` ainda hardcoded
+* ``elementoDespesa`` ainda hardcoded
+* mudar ``tests.TestaRequest`` para, ao inves de somar, conferir propriedades
+  imutáveis
+* criar função para iterar sobre os resultados
+* criar função para gerar csv (`exemplo
+  <https://gist.github.com/tcurvelo/6128607>`_)
+
+.. _`Portal Transparência`: http://www.portaltransparencia.jus.br/despesas/
