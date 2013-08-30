@@ -2,6 +2,7 @@
 from decimal import Decimal
 from xml.etree import ElementTree as ET
 import time
+import re
 
 url_base = "http://www.portaltransparencia.jus.br/despesas/rLista.php"
 
@@ -44,12 +45,37 @@ def prepara_url(inicio, fim, elemento):
     return url
 
 
-def sumariza(resultado):
-    raiz = ET.fromstring(resultado)
+def totaliza_valor(resultados):
+    return reduce(
+        lambda x, y: x + y,
+        map(lambda x: x["valor"], resultados)
+    )
 
-    soma = Decimal(0)
+
+def lista_de_resultados(response):
+    raiz = ET.fromstring(response)
+
+    resultados = []
     for nodo in raiz:
-        valor = nodo.find("valor")
-        soma+= Decimal(valor.text)
+        entrada = {}
+        entrada["data"] = nodo.find("data").text
+        entrada["documento"] = re.search(
+            ">(.*?)<",
+            nodo.find("documento").text
+        ).group(1)
+        entrada["origem"] = nodo.find("origem").text
+        entrada["especie"] = nodo.find("especie").text
+        entrada["orgaoSuperior"] = nodo.find("orgaoSuperior").text
+        entrada["unidade"] = nodo.find("unidade").text
+        entrada["favorecido"] = nodo.find("favorecido").text
+        entrada["gestora"] = nodo.find("gestora").text
+        entrada["fase"] = nodo.find("fase").text
+        entrada["valor"] = Decimal(nodo.find("valor").text)
+        entrada["elemento"] = nodo.find("elemento").text
+        entrada["tipoDocumento"] = nodo.find("tipoDocumento").text
+        entrada["codGestao"] = nodo.find("codGestao").text
+        entrada["codGestora"] = nodo.find("codGestora").text
+        entrada["evento"] = nodo.find("evento").text
+        resultados.append(entrada)
+    return resultados
 
-    return soma

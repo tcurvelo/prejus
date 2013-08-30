@@ -11,9 +11,6 @@ TODO
 * ``unidadeOrcamentaria`` ainda hardcoded
 * ``unidadeGestora`` ainda hardcoded
 * ``elementoDespesa`` ainda hardcoded
-* mudar ``tests.TestaRequest`` para, ao inves de somar, conferir propriedades
-  imutáveis
-* criar função para iterar sobre os resultados
 * criar função para gerar csv (`exemplo
   <https://gist.github.com/tcurvelo/6128607>`_)
 

@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+
 from br.jus.portal_transparencia import elementos_despesa
 from br.jus.portal_transparencia import util
 from datetime import datetime, timedelta
@@ -16,7 +17,7 @@ class TestaModuleUtil(unittest.TestCase):
 
     def test_prepara_url(self):
         url = util.prepara_url(
-            self.inicio, self.fim, elementos_despesa.DIARIAS_CIVIL
+            self.inicio, self.fim, elementos_despesa.DIARIAS_CIVIL["value"]
         )
 
         self.assertIn(
@@ -29,8 +30,8 @@ class TestaModuleUtil(unittest.TestCase):
         )
 
     def testa_sumariza(self):
-        with open("fixture.xml") as resultado:
-            soma = util.sumariza(resultado.read())
+        with open("test_fixture.xml") as response:
+            soma = util.totaliza_valor(util.lista_de_resultados(response.read()))
         self.assertEquals(soma, Decimal("73718.72"))
 
 
@@ -43,13 +44,19 @@ class TestaRequest(unittest.TestCase):
     def test_pega_diarias(self):
         url = util.prepara_url(
             self.inicio, self.fim,
-            elemento = elementos_despesa.DIARIAS_CIVIL
+            elemento = elementos_despesa.DIARIAS_CIVIL["value"]
         )
 
-        resultado = urllib2.urlopen(url).read()
-        total = util.sumariza(resultado)
+        resultados = util.lista_de_resultados(urllib2.urlopen(url).read())
 
-        self.assertEquals(total, Decimal("73718.72"))
+        diarias_filtradas = filter(
+            lambda x: x["elemento"] == elementos_despesa.DIARIAS_CIVIL["label"],
+            resultados
+        )
+
+        #todos as entradas tem o 'label' de diarias
+        self.assertEquals(len(diarias_filtradas), len(resultados))
+
 
 
 if __name__ == '__main__':
