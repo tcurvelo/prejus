@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from br.jus.portal_transparencia import elementos_despesa
+from br.jus.portal_transparencia import enums
 from br.jus.portal_transparencia import util
 from datetime import datetime, timedelta
 from decimal import Decimal
@@ -17,7 +17,7 @@ class TestaModuleUtil(unittest.TestCase):
 
     def test_prepara_url(self):
         url = util.prepara_url(
-            self.inicio, self.fim, elementos_despesa.DIARIAS_CIVIL["value"]
+            self.inicio, self.fim, enums.elementos.DIARIAS_CIVIL.value
         )
 
         self.assertIn(
@@ -44,13 +44,13 @@ class TestaRequest(unittest.TestCase):
     def test_pega_diarias(self):
         url = util.prepara_url(
             self.inicio, self.fim,
-            elemento = elementos_despesa.DIARIAS_CIVIL["value"]
+            elemento = enums.elementos.DIARIAS_CIVIL.value
         )
 
         resultados = util.lista_de_resultados(urllib2.urlopen(url).read())
 
         diarias_filtradas = filter(
-            lambda x: x["elemento"] == elementos_despesa.DIARIAS_CIVIL["label"],
+            lambda x: x["elemento"] == enums.elementos.DIARIAS_CIVIL.label,
             resultados
         )
 
