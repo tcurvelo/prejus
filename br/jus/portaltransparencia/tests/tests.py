@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from br.jus.portal_transparencia import enums
-from br.jus.portal_transparencia import util
+from br.jus.portaltransparencia import enums
+from br.jus.portaltransparencia import util
 from datetime import datetime, timedelta
 from decimal import Decimal
 import unittest

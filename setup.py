@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 version = '0.1dev'
 
-setup(name='br.jus.portal_transparencia',
+setup(name='br.jus.portaltransparencia',
     version=version,
     description="Cliente para consumir dados do Portal de " +
                 "Transparencia do Judiciario Brasileiro",
@@ -17,7 +17,7 @@ setup(name='br.jus.portal_transparencia',
     keywords='brasil brazil judiciario transparencia',
     author='Thiago Curvelo',
     author_email='tcurvelo@gmail.com',
-    url='https://github.com/tcurvelo/br.jus.portal_transparencia',
+    url='https://github.com/tcurvelo/br.jus.portaltransparencia',
     license='GPL',
     packages=find_packages(exclude=['ez_setup']),
     namespace_packages=['br'],

@@ -1,4 +1,4 @@
-br.jus.portal_transparencia
+br.jus.portaltransparencia
 ************************************************************************
 
 Cliente para para consumir dados do `Portal Transparência`_ do Judiciário
