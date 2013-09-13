@@ -6,7 +6,7 @@ Item = namedtuple('Item', 'value label')
 def Enum(**enums):
     return type("Enum", (), enums)
 
-elementos = Enum(
+elementosDespesa = Enum(
     APOSENTADORIAS_E_REFORMAS = Item(value="01", label= u"Aposentadorias e Reformas"),
     AQUISICAO_DE_IMOVEIS = Item(value="61", label= u"Aquisição de Imóveis"),
     AQUISICAO_DE_PRODUTOS_PARA_REVENDA = Item(value="62", label= u"Aquisição de Produtos para Revenda"),
@@ -98,4 +98,11 @@ elementos = Enum(
     VENCIMENTOS_E_VANTAGENS_FIXAS_PESSOAL_CIVIL = Item(value="11", label= u"VENCIMENTOS E VANTAGENS FIXAS - PESSOAL CIVIL"),
 
     VENCIMENTOS_E_VANTAGENS_FIXAS_PESSOAL_MILITAR = Item(value="12", label= u"Vencimentos e Vantagens Fixas - Pessoal Militar"),
+)
+
+
+fasesDespesa = Enum(
+    EMPENHO = Item(value="ne", label=u"Empenho"),
+    LIQUIDACAO = Item(value="nl", label=u"Liquidação"),
+    PAGAMENTO = Item(value="ob", label=u"Pagamento"),
 )

@@ -6,11 +6,9 @@ Brasileiro
 
 TODO
 ----
-* ``faseDespesa`` ainda hardcoded
 * ``orgaoSuperior`` ainda hardcoded
 * ``unidadeOrcamentaria`` ainda hardcoded
 * ``unidadeGestora`` ainda hardcoded
-* ``elementoDespesa`` ainda hardcoded
 * criar função para gerar csv (`exemplo
   <https://gist.github.com/tcurvelo/6128607>`_)
 

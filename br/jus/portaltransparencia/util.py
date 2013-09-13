@@ -1,40 +1,36 @@
 # -*- coding: utf-8 -*-
+from br.jus.portaltransparencia import enums
+from datetime import date
 from decimal import Decimal
 from xml.etree import ElementTree as ET
-import time
 import re
+import time
+
 
 url_base = "http://www.portaltransparencia.jus.br/despesas/rLista.php"
 
-def prepara_url(inicio, fim, elemento):
+
+def prepara_url(**kw):
+    inicio = kw["periodoInicio"] if "periodoInicio" in kw else date.today()
+    fim = kw["periodoFim"] if "periodoInicio" in kw else date.today()
+
     parametros = [
         ("periodoInicio", "%.2d%%2F%.2d%%2F%.4d" % (
-                                inicio.day, inicio.month, inicio.year
-                          )
-        ),
-
+            inicio.day, inicio.month, inicio.year
+        )),
         ("periodoFim", "%.2d%%2F%.2d%%2F%.4d" % (
-                            fim.day, fim.month, fim.year
-                        )
+            fim.day, fim.month, fim.year
+        )),
+        ("faseDespesa",
+            kw["faseDespesa"] if "faseDespesa" in kw else enums.fasesDespesa.PAGAMENTO.value
         ),
-
-        # 'ne' : Empenho
-        # 'nl' : Liquidação
-        # 'ob' : Pagamento
-        ("faseDespesa", "ob"),
-
         #'15000' : 'Justica do Trabalho'
         ("orgaoSuperior", "15000"),
-
         #'15114' : "TRT13"
         ("unidadeOrcamentaria", "15114"),
-
         #'080005' : "TRT13"
         ("unidadeGestora", "080005"),
-
-        #elementoDespesa : "14"
-        ("elementoDespesa", elemento),
-
+        ("elementoDespesa", kw["elementoDespesa"] if "elementoDespesa" in kw else ""),
         ("nd", str(int(time.time()*1000)) )
     ]
 
@@ -78,4 +74,3 @@ def lista_de_resultados(response):
         entrada["evento"] = nodo.find("evento").text
         resultados.append(entrada)
     return resultados
-

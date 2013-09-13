@@ -17,7 +17,8 @@ class TestaModuleUtil(unittest.TestCase):
 
     def test_prepara_url(self):
         url = util.prepara_url(
-            self.inicio, self.fim, enums.elementos.DIARIAS_CIVIL.value
+            periodoInicio=self.inicio, periodoFim=self.fim,
+            elementoDespesa = enums.elementosDespesa.DIARIAS_CIVIL.value
         )
 
         self.assertIn(
@@ -43,20 +44,27 @@ class TestaRequest(unittest.TestCase):
 
     def test_pega_diarias(self):
         url = util.prepara_url(
-            self.inicio, self.fim,
-            elemento = enums.elementos.DIARIAS_CIVIL.value
+            periodoInicio = self.inicio, periodoFim = self.fim,
+            elementoDespesa = enums.elementosDespesa.DIARIAS_CIVIL.value
         )
 
         resultados = util.lista_de_resultados(urllib2.urlopen(url).read())
 
         diarias_filtradas = filter(
-            lambda x: x["elemento"] == enums.elementos.DIARIAS_CIVIL.label,
+            lambda x: x["elemento"] == enums.elementosDespesa.DIARIAS_CIVIL.label,
             resultados
         )
 
-        #todos as entradas tem o 'label' de diarias
+        #todas as entradas sao diarias
         self.assertEquals(len(diarias_filtradas), len(resultados))
 
+        pagamentos_filtrados = filter(
+            lambda x: x["fase"] == enums.fasesDespesa.PAGAMENTO.label,
+            resultados
+        )
+
+        #todas as entradas sao pagamentos
+        self.assertEquals(len(pagamentos_filtrados), len(resultados))
 
 
 if __name__ == '__main__':
