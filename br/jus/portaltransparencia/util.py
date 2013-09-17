@@ -11,8 +11,8 @@ url_base = "http://www.portaltransparencia.jus.br/despesas/rLista.php"
 
 
 def prepara_url(**kw):
-    inicio = kw["periodoInicio"] if "periodoInicio" in kw else date.today()
-    fim = kw["periodoFim"] if "periodoInicio" in kw else date.today()
+    inicio = kw["inicio"] if "inicio" in kw else date.today()
+    fim = kw["fim"] if "fim" in kw else date.today()
 
     parametros = [
         ("periodoInicio", "%.2d%%2F%.2d%%2F%.4d" % (
@@ -22,15 +22,23 @@ def prepara_url(**kw):
             fim.day, fim.month, fim.year
         )),
         ("faseDespesa",
-            kw["faseDespesa"] if "faseDespesa" in kw else enums.fasesDespesa.PAGAMENTO.value
+            kw["fase"] if "fase" in kw else enums.fase.PAGAMENTO.value
         ),
-        #'15000' : 'Justica do Trabalho'
-        ("orgaoSuperior", "15000"),
-        #'15114' : "TRT13"
-        ("unidadeOrcamentaria", "15114"),
-        #'080005' : "TRT13"
-        ("unidadeGestora", "080005"),
-        ("elementoDespesa", kw["elementoDespesa"] if "elementoDespesa" in kw else ""),
+        ("orgaoSuperior",
+            kw["orgaoSuperior"] if "orgaoSuperior" in kw else
+                enums.orgaoSuperior.TODOS.value
+        ),
+        ("unidadeOrcamentaria",
+            kw["unidade"] if "unidade" in kw else enums.unidade.TODOS.value
+        ),
+        ("unidadeGestora",
+            #FIXME
+            # kw["gestora"] if "gestora" in kw else enums.gestora.TODOS.value
+            enums.gestora.TODOS.value
+        ),
+        ("elementoDespesa",
+            kw["elemento"] if "elemento" in kw else enums.elemento.TODOS.value
+        ),
         ("nd", str(int(time.time()*1000)) )
     ]
 

@@ -17,15 +17,18 @@ class TestaModuleUtil(unittest.TestCase):
 
     def test_prepara_url(self):
         url = util.prepara_url(
-            periodoInicio=self.inicio, periodoFim=self.fim,
-            elementoDespesa = enums.elementosDespesa.DIARIAS_CIVIL.value
+            inicio=self.inicio,
+            fim=self.fim,
+            elemento = enums.elemento.DIARIAS_CIVIL.value,
+            orgaoSuperior = enums.orgaoSuperior.JT.value,
+            unidade = enums.unidade.TRT13.value
         )
 
         self.assertIn(
             "http://www.portaltransparencia.jus.br/despesas/rLista.php?" +
             "periodoInicio=01%2F07%2F2013&periodoFim=31%2F07%2F2013" +
             "&faseDespesa=ob&orgaoSuperior=15000&unidadeOrcamentaria=15114" +
-            "&unidadeGestora=080005&elementoDespesa=14&nd=",
+            "&unidadeGestora=&elementoDespesa=14&nd=",
             url,
             ""
         )
@@ -44,14 +47,17 @@ class TestaRequest(unittest.TestCase):
 
     def test_pega_diarias(self):
         url = util.prepara_url(
-            periodoInicio = self.inicio, periodoFim = self.fim,
-            elementoDespesa = enums.elementosDespesa.DIARIAS_CIVIL.value
+            inicio=self.inicio,
+            fim=self.fim,
+            elemento = enums.elemento.DIARIAS_CIVIL.value,
+            orgaoSuperior = enums.orgaoSuperior.JT.value,
+            unidade = enums.unidade.TRT13.value
         )
 
         resultados = util.lista_de_resultados(urllib2.urlopen(url).read())
 
         diarias_filtradas = filter(
-            lambda x: x["elemento"] == enums.elementosDespesa.DIARIAS_CIVIL.label,
+            lambda x: x["elemento"] == enums.elemento.DIARIAS_CIVIL.label,
             resultados
         )
 
@@ -59,7 +65,7 @@ class TestaRequest(unittest.TestCase):
         self.assertEquals(len(diarias_filtradas), len(resultados))
 
         pagamentos_filtrados = filter(
-            lambda x: x["fase"] == enums.fasesDespesa.PAGAMENTO.label,
+            lambda x: x["fase"] == enums.fase.PAGAMENTO.label,
             resultados
         )
 
