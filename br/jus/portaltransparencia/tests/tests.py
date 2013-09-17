@@ -2,11 +2,10 @@
 # -*- coding: utf-8 -*-
 
 from br.jus.portaltransparencia import enums
-from br.jus.portaltransparencia import util
+from br.jus.portaltransparencia import despesas
 from datetime import datetime, timedelta
 from decimal import Decimal
 import unittest
-import urllib2
 
 
 class TestaModuleUtil(unittest.TestCase):
@@ -16,7 +15,7 @@ class TestaModuleUtil(unittest.TestCase):
         self.fim = datetime(day=31, month=7, year=2013)
 
     def test_prepara_url(self):
-        url = util.prepara_url(
+        url = despesas.prepara_url(
             inicio=self.inicio,
             fim=self.fim,
             elemento = enums.elemento.DIARIAS_CIVIL.value,
@@ -35,7 +34,7 @@ class TestaModuleUtil(unittest.TestCase):
 
     def testa_sumariza(self):
         with open("test_fixture.xml") as response:
-            soma = util.totaliza_valor(util.lista_de_resultados(response.read()))
+            soma = despesas.totaliza_valor(despesas.lista_de_resultados(response.read()))
         self.assertEquals(soma, Decimal("73718.72"))
 
 
@@ -46,15 +45,13 @@ class TestaRequest(unittest.TestCase):
         self.inicio = self.fim.replace(day=1)
 
     def test_pega_diarias(self):
-        url = util.prepara_url(
+        resultados = despesas.consulta(
             inicio=self.inicio,
             fim=self.fim,
-            elemento = enums.elemento.DIARIAS_CIVIL.value,
             orgaoSuperior = enums.orgaoSuperior.JT.value,
-            unidade = enums.unidade.TRT13.value
+            unidade = enums.unidade.TRT13.value,
+            elemento = enums.elemento.DIARIAS_CIVIL.value,
         )
-
-        resultados = util.lista_de_resultados(urllib2.urlopen(url).read())
 
         diarias_filtradas = filter(
             lambda x: x["elemento"] == enums.elemento.DIARIAS_CIVIL.label,

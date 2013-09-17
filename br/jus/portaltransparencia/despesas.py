@@ -5,6 +5,7 @@ from decimal import Decimal
 from xml.etree import ElementTree as ET
 import re
 import time
+import urllib2
 
 
 url_base = "http://www.portaltransparencia.jus.br/despesas/rLista.php"
@@ -82,3 +83,10 @@ def lista_de_resultados(response):
         entrada["evento"] = nodo.find("evento").text
         resultados.append(entrada)
     return resultados
+
+
+def consulta(**kw):
+    url = prepara_url(**kw)
+    return lista_de_resultados(
+        urllib2.urlopen(url).read()
+    )
