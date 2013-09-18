@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
 from br.jus.portaltransparencia import enums
 from br.jus.portaltransparencia import despesas
 from datetime import datetime, timedelta
@@ -8,11 +7,15 @@ from decimal import Decimal
 import unittest
 
 
-class TestaModuleUtil(unittest.TestCase):
+class TestaDespesasUtil(unittest.TestCase):
 
     def setUp(self):
         self.inicio = datetime(day=1, month=7, year=2013)
         self.fim = datetime(day=31, month=7, year=2013)
+        self.response = open("test_fixture.xml")
+
+    def tearDown(self):
+        self.response.close()
 
     def test_prepara_url(self):
         url = despesas.prepara_url(
@@ -32,13 +35,24 @@ class TestaModuleUtil(unittest.TestCase):
             ""
         )
 
+    def testa_lista_resultados(self):
+        resultados = despesas.lista_resultados(
+            self.response.read()
+        )
+        self.assertEquals(len(resultados), 89)
+
+    def testa_lista_resultados_vazia(self):
+        resultados = despesas.lista_resultados("")
+        self.assertEquals(len(resultados), 0)
+
     def testa_sumariza(self):
-        with open("test_fixture.xml") as response:
-            soma = despesas.totaliza_valor(despesas.lista_de_resultados(response.read()))
+        soma = despesas.totaliza_valor(
+            despesas.lista_resultados(self.response.read())
+        )
         self.assertEquals(soma, Decimal("73718.72"))
 
 
-class TestaRequest(unittest.TestCase):
+class TestaConsultas(unittest.TestCase):
 
     def setUp(self):
         self.fim = datetime.utcnow().replace(day=1) - timedelta(days=1)

@@ -57,8 +57,11 @@ def totaliza_valor(resultados):
     )
 
 
-def lista_de_resultados(response):
-    raiz = ET.fromstring(response)
+def lista_resultados(response):
+    try:
+        raiz = ET.fromstring(response)
+    except ET.ParseError:
+        return []
 
     resultados = []
     for nodo in raiz:
