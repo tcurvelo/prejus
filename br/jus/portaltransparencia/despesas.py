@@ -90,6 +90,6 @@ def lista_resultados(response):
 
 def consulta(**kw):
     url = prepara_url(**kw)
-    return lista_de_resultados(
+    return lista_resultados(
         urllib2.urlopen(url).read()
     )
