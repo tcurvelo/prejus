@@ -17,12 +17,10 @@ Exemplo de uso
         unidade = enums.unidade.TRT13.value,
         elemento = enums.elemento.DIARIAS_CIVIL.value,
     )
-    print resultados
+    despesas.salva_csv(resultados, "diarias.csv")
 
 TODO
 ----
 * ``unidadeGestora`` ainda fixa em 'TODOS'
-* criar função para gerar csv (`exemplo
-  <https://gist.github.com/tcurvelo/6128607>`_)
 
 .. _`Portal Transparência`: http://www.portaltransparencia.jus.br/despesas/

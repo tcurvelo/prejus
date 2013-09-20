@@ -3,6 +3,7 @@ from br.jus.portaltransparencia import enums
 from datetime import date
 from decimal import Decimal
 from xml.etree import ElementTree as ET
+import csv
 import re
 import time
 import urllib2
@@ -86,6 +87,22 @@ def lista_resultados(response):
         entrada["evento"] = nodo.find("evento").text
         resultados.append(entrada)
     return resultados
+
+
+def salva_csv(resultados, arquivo="resultados.csv"):
+    colunas = [
+        'favorecido', 'especie', 'codGestora', 'elemento', 'orgaoSuperior',
+        'evento', 'gestora', 'unidade', 'valor', 'codGestao',
+        'tipoDocumento', 'origem', 'fase', 'data', 'documento'
+    ]
+    with open(arquivo, "w") as csvfile:
+        writer = csv.DictWriter(
+            csvfile, colunas, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL
+        )
+        writer.writeheader()
+
+        for linha in resultados:
+            writer.writerow(linha)
 
 
 def consulta(**kw):
