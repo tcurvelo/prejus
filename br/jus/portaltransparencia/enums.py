@@ -8,7 +8,7 @@ def Enum(**enums):
 
 elemento = Enum(
     TODOS =  Item(value="", label= u"Todos"),
-    APOSENTADORIAS_E_REFORMAS = Item(value="01", label= u"Aposentadorias e Reformas"),
+    APOSENTADORIAS_E_REFORMAS = Item(value="01", label= u"APOSENT.RPPS, RESER.REMUNER. E REFOR.MILITAR"),
     AQUISICAO_DE_IMOVEIS = Item(value="61", label= u"Aquisição de Imóveis"),
     AQUISICAO_DE_PRODUTOS_PARA_REVENDA = Item(value="62", label= u"Aquisição de Produtos para Revenda"),
     AQUISICAO_DE_TITULOS_DE_CREDITO = Item(value="63", label= u"Aquisição de Títulos de Crédito"),
@@ -110,7 +110,7 @@ fase = Enum(
 
 
 orgaoSuperior = Enum(
-    TODOS = Item(value="", label=u"Todos"),
+    TODOS = Item(value="11000,12000,13000,14000,15000,16000,17000", label=u"Todos"),
     STJ = Item(value="11000", label=u"SUPERIOR TRIBUNAL DE JUSTICA"),
     JF = Item(value="12000", label=u"JUSTICA FEDERAL"),
     JM = Item(value="13000", label=u"JUSTICA MILITAR"),
