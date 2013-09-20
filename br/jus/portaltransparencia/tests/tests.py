@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 from br.jus.portaltransparencia import enums
 from br.jus.portaltransparencia import despesas
-from datetime import datetime, timedelta
+from datetime import date, timedelta
 from decimal import Decimal
 import unittest
 
@@ -10,8 +10,8 @@ import unittest
 class TestaDespesasUtil(unittest.TestCase):
 
     def setUp(self):
-        self.inicio = datetime(day=1, month=7, year=2013)
-        self.fim = datetime(day=31, month=7, year=2013)
+        self.inicio = date(day=1, month=7, year=2013)
+        self.fim = date(day=31, month=7, year=2013)
         self.response = open("test_fixture.xml")
 
     def tearDown(self):
@@ -55,7 +55,7 @@ class TestaDespesasUtil(unittest.TestCase):
 class TestaConsultas(unittest.TestCase):
 
     def setUp(self):
-        self.fim = datetime.utcnow().replace(day=1) - timedelta(days=1)
+        self.fim = date.today().replace(day=1) - timedelta(days=1)
         self.inicio = self.fim.replace(day=1)
 
     def test_pega_diarias(self):
