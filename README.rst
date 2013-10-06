@@ -19,6 +19,12 @@ Exemplo de uso
     )
     despesas.salva_csv(resultados, "diarias.csv")
 
+
+Para rodar os testes::
+
+    python -m br.jus.portaltransparencia.tests.tests
+
+
 TODO
 ----
 * ``unidadeGestora`` ainda fixa em 'TODOS'

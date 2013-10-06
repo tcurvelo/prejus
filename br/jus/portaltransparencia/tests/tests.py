@@ -1,9 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from br.jus.portaltransparencia import enums
 from br.jus.portaltransparencia import despesas
+from br.jus.portaltransparencia import enums
 from datetime import date, timedelta
 from decimal import Decimal
+
+import os
 import unittest
 
 
@@ -12,7 +14,9 @@ class TestaDespesasUtil(unittest.TestCase):
     def setUp(self):
         self.inicio = date(day=1, month=7, year=2013)
         self.fim = date(day=31, month=7, year=2013)
-        self.response = open("test_fixture.xml")
+        self.response = open(
+            os.path.join(os.path.dirname(__file__), 'test_fixture.xml')
+        )
 
     def tearDown(self):
         self.response.close()
