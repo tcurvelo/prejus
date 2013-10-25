@@ -70,32 +70,32 @@ def totaliza_valor(resultados):
 
 def lista_resultados(response):
     try:
-        raiz = ET.fromstring(response)
-    except ET.ParseError:
+        lista = ET.parse(response)
+        for nodo in lista.iter(tag='ob'):
+            despesa = Despesa(
+                data=nodo.find("data").text,
+                documento=re.search(
+                    ">(.*?)<",
+                    nodo.find("documento").text
+                ).group(1),
+                origem=nodo.find("origem").text,
+                especie=nodo.find("especie").text,
+                orgaoSuperior=nodo.find("orgaoSuperior").text,
+                unidade=nodo.find("unidade").text,
+                favorecido=nodo.find("favorecido").text,
+                gestora=nodo.find("gestora").text,
+                fase=nodo.find("fase").text,
+                valor=Decimal(nodo.find("valor").text),
+                elemento=nodo.find("elemento").text,
+                tipoDocumento=nodo.find("tipoDocumento").text,
+                codGestao=nodo.find("codGestao").text,
+                codGestora=nodo.find("codGestora").text,
+                evento=nodo.find("evento").text,
+            )
+            yield despesa
+    except Exception:
         return
 
-    for nodo in raiz:
-        despesa = Despesa(
-            data=nodo.find("data").text,
-            documento=re.search(
-                ">(.*?)<",
-                nodo.find("documento").text
-            ).group(1),
-            origem=nodo.find("origem").text,
-            especie=nodo.find("especie").text,
-            orgaoSuperior=nodo.find("orgaoSuperior").text,
-            unidade=nodo.find("unidade").text,
-            favorecido=nodo.find("favorecido").text,
-            gestora=nodo.find("gestora").text,
-            fase=nodo.find("fase").text,
-            valor=Decimal(nodo.find("valor").text),
-            elemento=nodo.find("elemento").text,
-            tipoDocumento=nodo.find("tipoDocumento").text,
-            codGestao=nodo.find("codGestao").text,
-            codGestora=nodo.find("codGestora").text,
-            evento=nodo.find("evento").text,
-        )
-        yield despesa
 
 def salva_csv(resultados, arquivo="resultados.csv"):
 
@@ -117,5 +117,5 @@ def salva_csv(resultados, arquivo="resultados.csv"):
 def consulta(**kw):
     url = prepara_url(**kw)
     return lista_resultados(
-        urllib2.urlopen(url).read()
+        urllib2.urlopen(url)
     )

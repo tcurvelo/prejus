@@ -59,7 +59,7 @@ class TestaDespesasUtil(unittest.TestCase):
         )
 
         resultados = despesas.lista_resultados(
-            self.response.read()
+            self.response
         )
 
         self.assertEqual(
@@ -69,7 +69,7 @@ class TestaDespesasUtil(unittest.TestCase):
 
     def testa_lista_resultados(self):
         resultados = despesas.lista_resultados(
-            self.response.read()
+            self.response
         )
         self.assertEquals(len(list(resultados)), 89)
 
@@ -79,7 +79,7 @@ class TestaDespesasUtil(unittest.TestCase):
 
     def testa_sumariza(self):
         soma = despesas.totaliza_valor(
-            despesas.lista_resultados(self.response.read())
+            despesas.lista_resultados(self.response)
         )
         self.assertEquals(soma, Decimal("73718.72"))
 
