@@ -39,6 +39,34 @@ class TestaDespesasUtil(unittest.TestCase):
             ""
         )
 
+    def testa_ordem_dos_campos_resultado(self):
+        esperado = (
+            '01/07/2013', # data
+            '2013OB802053', # documento
+            '2013NE000065', # origem
+            None, # especie
+            'JUSTICA DO TRABALHO', # orgaoSuperior
+            'TRIBUNAL REGIONAL DO TRABALHO DA 13A. REGIAO', #unidade
+            'ANA PAULA AZEVEDO SA CAMPOS PORTO', # favorecido
+            'TRIBUNAL REGIONAL DO TRABALHO DA 13A.REGIAO', # gestora
+            'Pagamento', # fase
+            Decimal('3946.38'), # valor
+            'DIARIAS - PESSOAL CIVIL', # elemento
+            u'Ordem Banc\xe1ria (OB)', # tipoDocumento
+            '00001', # codGestao
+            '080005', # codGestora
+            '531335', # evento
+        )
+
+        resultados = despesas.lista_resultados(
+            self.response.read()
+        )
+
+        self.assertEqual(
+            resultados[0],
+            esperado
+        )
+
     def testa_lista_resultados(self):
         resultados = despesas.lista_resultados(
             self.response.read()
@@ -72,7 +100,7 @@ class TestaConsultas(unittest.TestCase):
         )
 
         diarias_filtradas = filter(
-            lambda x: x["elemento"] == enums.elemento.DIARIAS_CIVIL.label,
+            lambda x: x.elemento == enums.elemento.DIARIAS_CIVIL.label,
             resultados
         )
 
@@ -80,7 +108,7 @@ class TestaConsultas(unittest.TestCase):
         self.assertEquals(len(diarias_filtradas), len(resultados))
 
         pagamentos_filtrados = filter(
-            lambda x: x["fase"] == enums.fase.PAGAMENTO.label,
+            lambda x: x.fase == enums.fase.PAGAMENTO.label,
             resultados
         )
 
