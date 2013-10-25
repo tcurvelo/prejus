@@ -63,7 +63,7 @@ class TestaDespesasUtil(unittest.TestCase):
         )
 
         self.assertEqual(
-            resultados[0],
+            resultados.next(),
             esperado
         )
 
@@ -71,11 +71,11 @@ class TestaDespesasUtil(unittest.TestCase):
         resultados = despesas.lista_resultados(
             self.response.read()
         )
-        self.assertEquals(len(resultados), 89)
+        self.assertEquals(len(list(resultados)), 89)
 
     def testa_lista_resultados_vazia(self):
         resultados = despesas.lista_resultados("")
-        self.assertEquals(len(resultados), 0)
+        self.assertEquals(len(list(resultados)), 0)
 
     def testa_sumariza(self):
         soma = despesas.totaliza_valor(
@@ -98,6 +98,8 @@ class TestaConsultas(unittest.TestCase):
             unidade = enums.unidade.TRT13.value,
             elemento = enums.elemento.DIARIAS_CIVIL.value,
         )
+
+        resultados = list(resultados)
 
         diarias_filtradas = filter(
             lambda x: x.elemento == enums.elemento.DIARIAS_CIVIL.label,

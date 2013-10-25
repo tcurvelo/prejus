@@ -72,11 +72,10 @@ def lista_resultados(response):
     try:
         raiz = ET.fromstring(response)
     except ET.ParseError:
-        return []
+        return
 
-    resultados = []
     for nodo in raiz:
-        entrada = Despesa(
+        despesa = Despesa(
             data=nodo.find("data").text,
             documento=re.search(
                 ">(.*?)<",
@@ -96,9 +95,7 @@ def lista_resultados(response):
             codGestora=nodo.find("codGestora").text,
             evento=nodo.find("evento").text,
         )
-        resultados.append(entrada)
-    return resultados
-
+        yield despesa
 
 def salva_csv(resultados, arquivo="resultados.csv"):
 
