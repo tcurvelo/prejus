@@ -17,11 +17,14 @@ class TestaDespesasUtil(unittest.TestCase):
         self.response = open(
             os.path.join(os.path.dirname(__file__), 'test_fixture.xml')
         )
+        self.response_vazio = open(
+            os.path.join(os.path.dirname(__file__), 'test_fixture_vazio.xml')
+        )
 
     def tearDown(self):
         self.response.close()
 
-    def test_prepara_url(self):
+    def testa_prepara_url_para_consulta(self):
         url = despesas.prepara_url(
             inicio=self.inicio,
             fim=self.fim,
@@ -39,7 +42,13 @@ class TestaDespesasUtil(unittest.TestCase):
             ""
         )
 
-    def testa_ordem_dos_campos_resultado(self):
+    def testa_resposta_valida_para_consulta_vazia(self):
+        self.assertFalse(despesas.resposta_valida(self.response_vazio))
+
+    def testa_resposta_valida_para_consulta_simples(self):
+        self.assertTrue(despesas.resposta_valida(self.response))
+
+    def testa_ordem_dos_campos_do_resultado(self):
         esperado = (
             '01/07/2013', # data
             '2013OB802053', # documento
@@ -74,10 +83,10 @@ class TestaDespesasUtil(unittest.TestCase):
         self.assertEquals(len(list(resultados)), 89)
 
     def testa_lista_resultados_vazia(self):
-        resultados = despesas.lista_resultados("")
+        resultados = despesas.lista_resultados(self.response_vazio)
         self.assertEquals(len(list(resultados)), 0)
 
-    def testa_sumariza(self):
+    def testa_totaliza_valor(self):
         soma = despesas.totaliza_valor(
             despesas.lista_resultados(self.response)
         )
@@ -91,6 +100,8 @@ class TestaConsultas(unittest.TestCase):
         self.inicio = self.fim.replace(day=1)
 
     def test_pega_diarias(self):
+        import types
+
         resultados = despesas.consulta(
             inicio=self.inicio,
             fim=self.fim,
@@ -98,6 +109,8 @@ class TestaConsultas(unittest.TestCase):
             unidade = enums.unidade.TRT13.value,
             elemento = enums.elemento.DIARIAS_CIVIL.value,
         )
+
+        self.assertTrue(isinstance(resultados, types.GeneratorType))
 
         resultados = list(resultados)
 
@@ -116,6 +129,17 @@ class TestaConsultas(unittest.TestCase):
 
         #todas as entradas sao pagamentos
         self.assertEquals(len(pagamentos_filtrados), len(resultados))
+
+    def testa_consulta_invalida(self):
+        resultados = despesas.consulta(
+            inicio=date(2013, 8 , 1),
+            fim=date(2013, 8 , 31),
+            orgaoSuperior=enums.orgaoSuperior.JT.value,
+            fase=enums.fase.PAGAMENTO.value,
+        )
+
+        self.assertTrue(isinstance(resultados, list))
+        self.assertEqual(len(resultados), 0)
 
 
 if __name__ == '__main__':

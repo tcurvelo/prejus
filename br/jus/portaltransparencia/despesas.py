@@ -114,8 +114,20 @@ def salva_csv(resultados, arquivo="resultados.csv"):
         writer.writerows(resultados)
 
 
+def resposta_valida(response):
+    linha = response.readline()
+    if len(linha) == 0 or linha == "Erro na gera\xe7\xe3o do XML":
+        return False
+    else:
+        return True
+
+
 def consulta(**kw):
     url = prepara_url(**kw)
-    return lista_resultados(
-        urllib2.urlopen(url)
-    )
+    response = urllib2.urlopen(url)
+    if resposta_valida(response):
+        return lista_resultados(
+            response
+        )
+    else:
+        return []
