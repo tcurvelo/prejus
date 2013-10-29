@@ -125,9 +125,10 @@ def resposta_valida(response):
 def consulta(**kw):
     url = prepara_url(**kw)
     response = urllib2.urlopen(url)
-    if resposta_valida(response):
-        return lista_resultados(
-            response
-        )
+    if not resposta_valida(response):
+        resultados = []
     else:
-        return []
+        resultados = lista_resultados(response)
+    response.close()
+    return resultados
+
