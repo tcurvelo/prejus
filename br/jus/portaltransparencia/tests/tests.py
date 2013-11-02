@@ -42,12 +42,6 @@ class TestaDespesasUtil(unittest.TestCase):
             ""
         )
 
-    def testa_resposta_valida_para_consulta_vazia(self):
-        self.assertFalse(despesas.resposta_valida(self.response_vazio))
-
-    def testa_resposta_valida_para_consulta_simples(self):
-        self.assertTrue(despesas.resposta_valida(self.response))
-
     def testa_ordem_dos_campos_do_resultado(self):
         esperado = (
             '01/07/2013', # data
@@ -72,7 +66,7 @@ class TestaDespesasUtil(unittest.TestCase):
         )
 
         self.assertEqual(
-            resultados.next(),
+            resultados[0],
             esperado
         )
 
@@ -100,8 +94,6 @@ class TestaConsultas(unittest.TestCase):
         self.inicio = self.fim.replace(day=1)
 
     def test_pega_diarias(self):
-        import types
-
         resultados = despesas.consulta(
             inicio=self.inicio,
             fim=self.fim,
@@ -110,9 +102,9 @@ class TestaConsultas(unittest.TestCase):
             elemento = enums.elemento.DIARIAS_CIVIL.value,
         )
 
-        self.assertTrue(isinstance(resultados, types.GeneratorType))
-
-        resultados = list(resultados)
+        # confirma o total de resultados
+        total = 117
+        self.assertEquals(len(resultados), total)
 
         diarias_filtradas = filter(
             lambda x: x.elemento == enums.elemento.DIARIAS_CIVIL.label,
@@ -120,7 +112,7 @@ class TestaConsultas(unittest.TestCase):
         )
 
         #todas as entradas sao diarias
-        self.assertEquals(len(diarias_filtradas), len(resultados))
+        self.assertEquals(len(diarias_filtradas), total)
 
         pagamentos_filtrados = filter(
             lambda x: x.fase == enums.fase.PAGAMENTO.label,
@@ -128,12 +120,12 @@ class TestaConsultas(unittest.TestCase):
         )
 
         #todas as entradas sao pagamentos
-        self.assertEquals(len(pagamentos_filtrados), len(resultados))
+        self.assertEquals(len(pagamentos_filtrados), total)
 
     def testa_consulta_invalida(self):
         resultados = despesas.consulta(
-            inicio=date(2013, 8 , 1),
-            fim=date(2013, 8 , 31),
+            inicio=date(2013, 8, 1),
+            fim=date(2013, 8, 31),
             orgaoSuperior=enums.orgaoSuperior.JT.value,
             fase=enums.fase.PAGAMENTO.value,
         )

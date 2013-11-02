@@ -3,7 +3,7 @@ from br.jus.portaltransparencia import enums
 from collections import namedtuple
 from datetime import date
 from decimal import Decimal
-from xml.etree import ElementTree as ET
+from xml.etree import ElementTree
 
 import csv
 import re
@@ -70,9 +70,9 @@ def totaliza_valor(resultados):
 
 def lista_resultados(response):
     try:
-        lista = ET.parse(response)
-        for nodo in lista.iter(tag='ob'):
-            despesa = Despesa(
+        lista = ElementTree.parse(response).getroot()
+        return [
+            Despesa(
                 data=nodo.find("data").text,
                 documento=re.search(
                     ">(.*?)<",
@@ -91,10 +91,10 @@ def lista_resultados(response):
                 codGestao=nodo.find("codGestao").text,
                 codGestora=nodo.find("codGestora").text,
                 evento=nodo.find("evento").text,
-            )
-            yield despesa
-    except Exception:
-        return
+            ) for nodo in lista
+        ]
+    except ElementTree.ParseError:
+        return []
 
 
 def salva_csv(resultados, arquivo="resultados.csv"):
@@ -114,21 +114,17 @@ def salva_csv(resultados, arquivo="resultados.csv"):
         writer.writerows(resultados)
 
 
-def resposta_valida(response):
-    linha = response.readline()
-    if len(linha) == 0 or linha == "Erro na gera\xe7\xe3o do XML":
-        return False
-    else:
-        return True
-
-
 def consulta(**kw):
     url = prepara_url(**kw)
     response = urllib2.urlopen(url)
-    if not resposta_valida(response):
-        resultados = []
-    else:
-        resultados = lista_resultados(response)
+
+    try:
+        if response.getcode() != 200:
+            resultados = []
+    except AttributeError:
+        if not isinstance(response, file):
+            resultados = []
+
+    resultados = lista_resultados(response)
     response.close()
     return resultados
-
