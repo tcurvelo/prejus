@@ -90,8 +90,8 @@ class TestaDespesasUtil(unittest.TestCase):
 class TestaConsultas(unittest.TestCase):
 
     def setUp(self):
-        self.fim = date.today().replace(day=1) - timedelta(days=1)
-        self.inicio = self.fim.replace(day=1)
+        self.inicio = date(2013, 8, 1)
+        self.fim = date(2013, 8, 31)
 
     def test_pega_diarias(self):
         resultados = despesas.consulta(
@@ -103,7 +103,7 @@ class TestaConsultas(unittest.TestCase):
         )
 
         # confirma o total de resultados
-        total = 117
+        total = 153
         self.assertEquals(len(resultados), total)
 
         diarias_filtradas = filter(
@@ -123,9 +123,11 @@ class TestaConsultas(unittest.TestCase):
         self.assertEquals(len(pagamentos_filtrados), total)
 
     def testa_consulta_invalida(self):
+
         resultados = despesas.consulta(
-            inicio=date(2013, 8, 1),
-            fim=date(2013, 8, 31),
+            # inicio e fim como datas futuras
+            inicio=date.today() + timedelta(days=1),
+            fim=date.today() + timedelta(days=2),
             orgaoSuperior=enums.orgaoSuperior.JT.value,
             fase=enums.fase.PAGAMENTO.value,
         )
