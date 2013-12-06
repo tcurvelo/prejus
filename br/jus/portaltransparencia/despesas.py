@@ -3,7 +3,7 @@ from br.jus.portaltransparencia import enums
 from collections import namedtuple
 from datetime import date
 from decimal import Decimal
-from xml.etree import ElementTree
+from xml.etree import cElementTree as ET
 
 import csv
 import re
@@ -70,7 +70,7 @@ def totaliza_valor(resultados):
 
 def lista_resultados(response):
     try:
-        lista = ElementTree.parse(response).getroot()
+        lista = ET.parse(response).getroot()
         return [
             Despesa(
                 data=nodo.find("data").text,
@@ -93,7 +93,7 @@ def lista_resultados(response):
                 evento=nodo.find("evento").text,
             ) for nodo in lista
         ]
-    except ElementTree.ParseError:
+    except ET.ParseError:
         return []
 
 
