@@ -2,6 +2,7 @@
 from br.jus.portaltransparencia import enums
 from collections import namedtuple
 from datetime import date
+from datetime import datetime
 from decimal import Decimal
 from xml.etree import cElementTree as ET
 
@@ -73,7 +74,10 @@ def lista_resultados(response):
         lista = ET.parse(response).getroot()
         return [
             Despesa(
-                data=nodo.find("data").text,
+                data=datetime.strptime(
+                    nodo.find("data").text,
+                    '%d/%m/%Y'
+                ).date(),
                 documento=re.search(
                     ">(.*?)<",
                     nodo.find("documento").text
