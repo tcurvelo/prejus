@@ -22,7 +22,7 @@ Exemplo de uso
 
 Para rodar os testes::
 
-    python -m br.jus.portaltransparencia.tests.tests
+    python -m br.jus.portaltransparencia.tests
 
 
 TODO

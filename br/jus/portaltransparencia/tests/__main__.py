@@ -43,22 +43,22 @@ class TestaDespesasUtil(unittest.TestCase):
         )
 
     def testa_ordem_dos_campos_do_resultado(self):
-        esperado = (
-            '01/07/2013', # data
-            '2013OB802053', # documento
-            '2013NE000065', # origem
-            None, # especie
-            'JUSTICA DO TRABALHO', # orgaoSuperior
-            'TRIBUNAL REGIONAL DO TRABALHO DA 13A. REGIAO', #unidade
-            'ANA PAULA AZEVEDO SA CAMPOS PORTO', # favorecido
-            'TRIBUNAL REGIONAL DO TRABALHO DA 13A.REGIAO', # gestora
-            'Pagamento', # fase
-            Decimal('3946.38'), # valor
-            'DIARIAS - PESSOAL CIVIL', # elemento
-            u'Ordem Banc\xe1ria (OB)', # tipoDocumento
-            '00001', # codGestao
-            '080005', # codGestora
-            '531335', # evento
+        esperado = despesas.Despesa(
+            data=date(2013, 7, 1),
+            documento='2013OB802053',
+            origem='2013NE000065',
+            especie=None,
+            orgaoSuperior='JUSTICA DO TRABALHO',
+            unidade='TRIBUNAL REGIONAL DO TRABALHO DA 13A. REGIAO',
+            favorecido='ANA PAULA AZEVEDO SA CAMPOS PORTO',
+            gestora='TRIBUNAL REGIONAL DO TRABALHO DA 13A.REGIAO',
+            fase='Pagamento',
+            valor=Decimal('3946.38'),
+            elemento='DIARIAS - PESSOAL CIVIL',
+            tipoDocumento=u'Ordem Banc\xe1ria (OB)',
+            codGestao='00001',
+            codGestora='080005',
+            evento='531335',
         )
 
         resultados = despesas.lista_resultados(
