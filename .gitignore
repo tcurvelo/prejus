@@ -1,5 +1,10 @@
 *.egg-info/
 *.pyc
 *~
+
+bin/
 build/
 dist/
+include/
+lib/
+local/
