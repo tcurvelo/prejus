@@ -1,12 +1,16 @@
 br.jus.portaltransparencia
 ************************************************************************
-
 Cliente para para consumir dados do `Portal Transparência`_ do
-Judiciário Brasileiro
+Judiciário Brasileiro.
 
-Exemplo de uso
---------------
-::
+
+Utilizando
+==========
+Para instalar::
+
+    python setup.py install
+
+Exemplo::
 
     from br.jus.portaltransparencia import despesas, enums
     from datetime import date
@@ -20,13 +24,16 @@ Exemplo de uso
     despesas.salva_csv(resultados, "diarias.csv")
 
 
-Para rodar os testes::
+Desenvolvendo
+=============
+Instalando::
+
+    python setup.py develop
+
+Rodando os testes::
 
     python -m br.jus.portaltransparencia.tests
 
 
-TODO
-----
-* ``unidadeGestora`` ainda fixa em 'TODOS'
-
 .. _`Portal Transparência`: http://www.portaltransparencia.jus.br/despesas/
+
