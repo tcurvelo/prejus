@@ -4,12 +4,13 @@ from collections import namedtuple
 from datetime import date
 from datetime import datetime
 from decimal import Decimal
+from functools import reduce
+from urllib.request import urlopen
 from xml.etree import cElementTree as ET
 
 import csv
 import re
 import time
-import urllib2
 
 
 url_base = "http://www.portaltransparencia.jus.br/despesas/rLista.php"
@@ -69,9 +70,9 @@ def totaliza_valor(resultados):
     )
 
 
-def lista_resultados(response):
+def lista_resultados(text):
     try:
-        lista = ET.parse(response).getroot()
+        lista = ET.fromstring(text)
         return [
             Despesa(
                 data=datetime.strptime(
@@ -97,7 +98,7 @@ def lista_resultados(response):
                 evento=nodo.find("evento").text,
             ) for nodo in lista
         ]
-    except ET.ParseError:
+    except ET.ParseError as e:
         return []
 
 
@@ -120,7 +121,7 @@ def salva_csv(resultados, arquivo="resultados.csv"):
 
 def consulta(**kw):
     url = prepara_url(**kw)
-    response = urllib2.urlopen(url)
+    response = urlopen(url)
 
     try:
         if response.getcode() != 200:
@@ -129,6 +130,6 @@ def consulta(**kw):
         if not isinstance(response, file):
             resultados = []
 
-    resultados = lista_resultados(response)
+    resultados = lista_resultados(response.read())
     response.close()
     return resultados
