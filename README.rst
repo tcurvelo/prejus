@@ -1,4 +1,4 @@
-br.jus.portaltransparencia
+prejus
 ************************************************************************
 Cliente para para consumir dados do `Portal Transparência`_ do
 Judiciário Brasileiro.
@@ -8,11 +8,11 @@ Utilizando
 ==========
 Para instalar::
 
-    python setup.py install
+    pip install .
 
 Exemplo::
 
-    from br.jus.portaltransparencia import despesas, enums
+    from prejus import despesas, enums
     from datetime import date
     resultados = despesas.consulta(
         inicio = date(2013,8,1),
@@ -28,7 +28,7 @@ Desenvolvendo
 =============
 Instalando::
 
-    python setup.py develop
+    pip install --editable .
 
 Rodando os testes::
 

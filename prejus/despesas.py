@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
-from br.jus.portaltransparencia import enums
 from collections import namedtuple
 from datetime import date
 from datetime import datetime
 from decimal import Decimal
 from functools import reduce
+from prejus import enums
 from urllib.request import urlopen
 from xml.etree import cElementTree as ET
 

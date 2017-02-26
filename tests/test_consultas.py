@@ -1,7 +1,5 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from br.jus.portaltransparencia import despesas
-from br.jus.portaltransparencia import enums
+from prejus import despesas, enums
 from datetime import date, timedelta
 from decimal import Decimal
 
