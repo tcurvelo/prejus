@@ -32,7 +32,8 @@ Instalando::
 
 Rodando os testes::
 
-    python -m br.jus.portaltransparencia.tests
+    pip install pytest
+    pytest
 
 
 .. _`Portal Transparência`: http://www.portaltransparencia.jus.br/despesas/
