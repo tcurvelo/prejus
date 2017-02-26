@@ -13,23 +13,28 @@ response = open(fixture_path.format('test_fixture.xml')).read()
 empty_response = open(fixture_path.format('test_fixture_vazio.xml')).read()
 
 
-def testa_prepara_url_para_consulta():
-    url = despesas.prepara_url(
+def testa_prepara_params_para_consulta():
+    params = despesas.prepara_params(
         inicio=data_inicio,
         fim=data_fim,
-        elemento = enums.elemento.DIARIAS_CIVIL.value,
-        orgaoSuperior = enums.orgaoSuperior.JT.value,
-        unidade = enums.unidade.TRT13.value
+        elemento = enums.elemento.DIARIAS_CIVIL,
+        orgaoSuperior = enums.orgaoSuperior.JT,
+        unidade = enums.unidade.TRT13,
     )
 
-    expected = (
-        'http://www.portaltransparencia.jus.br/despesas/rLista.php?'
-        'periodoInicio=01%2F07%2F2013&periodoFim=31%2F07%2F2013'
-        '&faseDespesa=ob&orgaoSuperior=15000&unidadeOrcamentaria=15114'
-        '&unidadeGestora=&elementoDespesa=14&nd='
-    )
+    expected = set([
+        ('periodoInicio', '01/07/2013'),
+        ('periodoFim', '31/07/2013'),
+        ('faseDespesa', 'ob'),
+        ('orgaoSuperior', '15000'),
+        ('unidadeOrcamentaria', '15114'),
+        ('unidadeGestora', ''),
+        ('elementoDespesa', '14'),
+        # ('nd', ''),
+    ])
+    params_set = set(params.items())
 
-    assert expected in url
+    assert expected.issubset(params_set)
 
 
 def testa_ordem_dos_campos_do_resultado():
@@ -77,9 +82,9 @@ def test_pega_diarias():
     resultados = despesas.consulta(
         inicio=inicio,
         fim=fim,
-        orgaoSuperior = enums.orgaoSuperior.JT.value,
-        unidade = enums.unidade.TRT13.value,
-        elemento = enums.elemento.DIARIAS_CIVIL.value,
+        orgaoSuperior = enums.orgaoSuperior.JT,
+        unidade = enums.unidade.TRT13,
+        elemento = enums.elemento.DIARIAS_CIVIL,
     )
 
     # confirma o total de resultados
@@ -108,8 +113,8 @@ def testa_consulta_invalida():
         # inicio e fim como datas futuras
         inicio=date.today() + timedelta(days=1),
         fim=date.today() + timedelta(days=2),
-        orgaoSuperior=enums.orgaoSuperior.JT.value,
-        fase=enums.fase.PAGAMENTO.value,
+        orgaoSuperior=enums.orgaoSuperior.JT,
+        fase=enums.fase.PAGAMENTO,
     )
 
     assert isinstance(resultados, list)

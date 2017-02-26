@@ -1,19 +1,18 @@
 # -*- coding: utf-8 -*-
 from collections import namedtuple
-from datetime import date
-from datetime import datetime
+from datetime import date, datetime
 from decimal import Decimal
 from functools import reduce
 from prejus import enums
-from urllib.request import urlopen
 from xml.etree import cElementTree as ET
 
 import csv
 import re
+import requests
 import time
 
 
-url_base = "http://www.portaltransparencia.jus.br/despesas/rLista.php"
+URL_BASE = 'http://www.portaltransparencia.jus.br/despesas/rLista.php'
 
 
 Despesa = namedtuple(
@@ -24,43 +23,24 @@ Despesa = namedtuple(
 )
 
 
-def prepara_url(**kw):
-    inicio = kw["inicio"] if "inicio" in kw else date.today()
-    fim = kw["fim"] if "fim" in kw else date.today()
+def prepara_params(inicio=date.today(), fim=date.today(),
+                fase=enums.fase.PAGAMENTO,
+                orgaoSuperior=enums.orgaoSuperior.TODOS,
+                unidade=enums.unidade.TODOS,
+                elemento=enums.elemento.TODOS,
+                ):
+    params ={
+        'periodoInicio': inicio.strftime('%d/%m/%Y'),
+        'periodoFim': fim.strftime('%d/%m/%Y'),
+        'faseDespesa': fase.value,
+        'orgaoSuperior': orgaoSuperior.value,
+        'unidadeOrcamentaria': unidade.value,
+        'unidadeGestora': enums.gestora.TODOS.value,
+        'elementoDespesa': elemento.value,
+        'nd': str(int(time.time()*1000)),
+    }
 
-    parametros = [
-        ("periodoInicio", "%.2d%%2F%.2d%%2F%.4d" % (
-            inicio.day, inicio.month, inicio.year
-        )),
-        ("periodoFim", "%.2d%%2F%.2d%%2F%.4d" % (
-            fim.day, fim.month, fim.year
-        )),
-        ("faseDespesa",
-            kw["fase"] if "fase" in kw else enums.fase.PAGAMENTO.value
-        ),
-        ("orgaoSuperior",
-            kw["orgaoSuperior"] if "orgaoSuperior" in kw else
-                enums.orgaoSuperior.TODOS.value
-        ),
-        ("unidadeOrcamentaria",
-            kw["unidade"] if "unidade" in kw else enums.unidade.TODOS.value
-        ),
-        ("unidadeGestora",
-            #FIXME
-            # kw["gestora"] if "gestora" in kw else enums.gestora.TODOS.value
-            enums.gestora.TODOS.value
-        ),
-        ("elementoDespesa",
-            kw["elemento"] if "elemento" in kw else enums.elemento.TODOS.value
-        ),
-        ("nd", str(int(time.time()*1000)) )
-    ]
-
-    url = url_base + "?" + "&".join(
-        ["=".join([k, v]) for k, v in parametros]
-    )
-
-    return url
+    return params
 
 
 def totaliza_valor(resultados):
@@ -120,16 +100,13 @@ def salva_csv(resultados, arquivo="resultados.csv"):
 
 
 def consulta(**kw):
-    url = prepara_url(**kw)
-    response = urlopen(url)
+    params = prepara_params(**kw)
+    response = requests.get(URL_BASE, params=params)
 
-    try:
-        if response.getcode() != 200:
-            resultados = []
-    except AttributeError:
-        if not isinstance(response, file):
-            resultados = []
+    if response.status_code != 200:
+        resultados = []
+    else:
+        resultados = lista_resultados(response.text)
 
-    resultados = lista_resultados(response.read())
     response.close()
     return resultados

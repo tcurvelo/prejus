@@ -12,6 +12,7 @@ setup(
     py_modules=['prejus'],
     install_requires=[
         'setuptools',
+        'requests',
     ],
     entry_points="""
     """,
