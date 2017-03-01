@@ -12,20 +12,20 @@ Para instalar::
 
 Exemplo::
 
-    from prejus import despesas, enums
+    import prejus
     from datetime import date
-    resultados = despesas.consulta(
-        inicio = date(2013,8,1),
-        fim = date(2013,8,30),
-        orgaoSuperior = enums.orgaoSuperior.JT.value,
-        unidade = enums.unidade.TRT13.value,
-        elemento = enums.elemento.DIARIAS_CIVIL.value,
+    resultados = prejus.consulta(
+        inicio = date(2016, 1, 1),
+        fim = date(2016, 1, 31),
+        unidade = prejus.Unidade.TRT13,
+        elemento = prejus.Elemento.DIARIAS_CIVIL,
     )
     despesas.salva_csv(resultados, "diarias.csv")
 
 
 Desenvolvendo
 =============
+
 Instalando::
 
     pip install --editable .

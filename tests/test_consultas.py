@@ -17,9 +17,9 @@ def testa_prepara_params_para_consulta():
     params = despesas.prepara_params(
         inicio=data_inicio,
         fim=data_fim,
-        elemento = enums.elemento.DIARIAS_CIVIL,
-        orgaoSuperior = enums.orgaoSuperior.JT,
-        unidade = enums.unidade.TRT13,
+        elemento = enums.Elemento.DIARIAS_CIVIL,
+        orgaoSuperior = enums.OrgaoSuperior.JT,
+        unidade = enums.Unidade.TRT13,
     )
 
     expected = set([
@@ -82,9 +82,9 @@ def test_pega_diarias():
     resultados = despesas.consulta(
         inicio=inicio,
         fim=fim,
-        orgaoSuperior = enums.orgaoSuperior.JT,
-        unidade = enums.unidade.TRT13,
-        elemento = enums.elemento.DIARIAS_CIVIL,
+        orgaoSuperior = enums.OrgaoSuperior.JT,
+        unidade = enums.Unidade.TRT13,
+        elemento = enums.Elemento.DIARIAS_CIVIL,
     )
 
     # confirma o total de resultados
@@ -92,7 +92,7 @@ def test_pega_diarias():
     assert len(resultados) == total
 
     diarias_filtradas = filter(
-        lambda x: x.elemento == enums.elemento.DIARIAS_CIVIL.label,
+        lambda x: x.elemento == enums.Elemento.DIARIAS_CIVIL.label,
         resultados
     )
 
@@ -100,7 +100,7 @@ def test_pega_diarias():
     assert len(list(diarias_filtradas)) == total
 
     pagamentos_filtrados = filter(
-        lambda x: x.fase == enums.fase.PAGAMENTO.label,
+        lambda x: x.fase == enums.Fase.PAGAMENTO.label,
         resultados
     )
 
@@ -113,8 +113,8 @@ def testa_consulta_invalida():
         # inicio e fim como datas futuras
         inicio=date.today() + timedelta(days=1),
         fim=date.today() + timedelta(days=2),
-        orgaoSuperior=enums.orgaoSuperior.JT,
-        fase=enums.fase.PAGAMENTO,
+        orgaoSuperior=enums.OrgaoSuperior.JT,
+        fase=enums.Fase.PAGAMENTO,
     )
 
     assert isinstance(resultados, list)

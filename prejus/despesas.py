@@ -24,19 +24,19 @@ Despesa = namedtuple(
 
 
 def prepara_params(inicio=date.today(), fim=date.today(),
-                fase=enums.fase.PAGAMENTO,
-                orgaoSuperior=enums.orgaoSuperior.TODOS,
-                unidade=enums.unidade.TODOS,
-                elemento=enums.elemento.TODOS,
+                fase=enums.Fase.PAGAMENTO,
+                orgaoSuperior=enums.OrgaoSuperior.TODOS,
+                unidade=enums.Unidade.TODOS,
+                elemento=enums.Elemento.TODOS,
                 ):
     params ={
         'periodoInicio': inicio.strftime('%d/%m/%Y'),
         'periodoFim': fim.strftime('%d/%m/%Y'),
-        'faseDespesa': fase.value,
-        'orgaoSuperior': orgaoSuperior.value,
-        'unidadeOrcamentaria': unidade.value,
-        'unidadeGestora': enums.gestora.TODOS.value,
-        'elementoDespesa': elemento.value,
+        'faseDespesa': fase.cod,
+        'orgaoSuperior': orgaoSuperior.cod,
+        'unidadeOrcamentaria': unidade.cod,
+        'unidadeGestora': enums.Gestora.TODOS.cod,
+        'elementoDespesa': elemento.cod,
         'nd': str(int(time.time()*1000)),
     }
 
