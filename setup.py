@@ -9,11 +9,14 @@ setup(
     author='Thiago Curvelo',
     author_email='tcurvelo@gmail.com',
     url='https://github.com/tcurvelo/prejus',
-    py_modules=['prejus'],
+    py_modules=['prejus', 'scripts'],
     install_requires=[
         'setuptools',
+        'Click',
         'requests',
     ],
-    entry_points="""
-    """,
+    entry_points='''
+        [console_scripts]
+        prejus=scripts.prejus:cli
+    '''
 )

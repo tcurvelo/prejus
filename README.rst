@@ -1,16 +1,21 @@
 prejus
 ************************************************************************
-Cliente para para consumir dados do `Portal Transparência`_ do
-Judiciário Brasileiro.
+Cliente para para consumir dados do `Portal Transparência`_ do Judiciário
+Brasileiro.
 
 
 Utilizando
 ==========
+
 Para instalar::
 
-    pip install .
+  pip install prejus
 
-Exemplo::
+Usando o cliente de linha de comando::
+
+  $ prejus --elemento DIARIAS_CIVIL --inicio 01-01-2016 --fim 31-12-2016 TRT13 > diarias_2016.csv
+
+Usando dentro de outra app::
 
     import prejus
     from datetime import date
