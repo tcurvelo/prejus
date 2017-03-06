@@ -12,7 +12,7 @@ import requests
 import time
 
 
-URL_BASE = 'http://www.portaltransparencia.jus.br/despesas/rLista.php'
+URL_BASE = 'http://www.portaltransparencia.jus.br/portaltransparencia/despesas/rLista.php'
 
 
 Despesa = namedtuple(
