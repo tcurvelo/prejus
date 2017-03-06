@@ -3,6 +3,7 @@ from prejus import despesas, enums
 from datetime import date, timedelta
 from decimal import Decimal
 
+import mock
 import os
 
 
@@ -11,6 +12,15 @@ data_fim = date(day=31, month=7, year=2013)
 fixture_path=os.path.join(os.path.dirname(__file__), 'fixtures', '{}')
 response = open(fixture_path.format('test_fixture.xml')).read()
 empty_response = open(fixture_path.format('test_fixture_vazio.xml')).read()
+
+
+class MockResponse(object):
+    def __init__(self, status_code, text):
+        self.status_code = status_code
+        self.text = text
+
+    def close(self):
+        pass
 
 
 def testa_prepara_params_para_consulta():
@@ -67,6 +77,7 @@ def testa_lista_resultados():
 
 def testa_lista_resultados_vazia():
     resultados = despesas.lista_resultados(empty_response)
+    assert isinstance(resultados, list)
     assert len(list(resultados)) == 0
 
 
@@ -75,20 +86,24 @@ def testa_totaliza_valor():
     assert total == Decimal("73718.72")
 
 
-#FIXME: mockar o resultado desse request, sem realizá-lo de fato
-def test_pega_diarias():
+def testa_pega_diarias():
     inicio = date(2013, 8, 1)
     fim = date(2013, 8, 31)
-    resultados = despesas.consulta(
-        inicio=inicio,
-        fim=fim,
-        orgaoSuperior = enums.OrgaoSuperior.JT,
-        unidade = enums.Unidade.TRT13,
-        elemento = enums.Elemento.DIARIAS_CIVIL,
-    )
+
+    with mock.patch(
+        'requests.get',
+        side_effect=lambda url, params: MockResponse(200, response)) as patch:
+
+        resultados = despesas.consulta(
+            inicio=inicio,
+            fim=fim,
+            orgaoSuperior = enums.OrgaoSuperior.JT,
+            unidade = enums.Unidade.TRT13,
+            elemento = enums.Elemento.DIARIAS_CIVIL,
+        )
 
     # confirma o total de resultados
-    total = 158
+    total = 89
     assert len(resultados) == total
 
     diarias_filtradas = filter(
@@ -96,7 +111,7 @@ def test_pega_diarias():
         resultados
     )
 
-    #todas as entradas sao diarias
+    # todas as entradas sao diarias
     assert len(list(diarias_filtradas)) == total
 
     pagamentos_filtrados = filter(
@@ -106,17 +121,4 @@ def test_pega_diarias():
 
     #todas as entradas sao pagamentos
     assert len(list(pagamentos_filtrados)) == total
-
-#FIXME: mockar uma consulta a data futura, sem fazer o request
-def testa_consulta_invalida():
-    resultados = despesas.consulta(
-        # inicio e fim como datas futuras
-        inicio=date.today() + timedelta(days=1),
-        fim=date.today() + timedelta(days=2),
-        orgaoSuperior=enums.OrgaoSuperior.JT,
-        fase=enums.Fase.PAGAMENTO,
-    )
-
-    assert isinstance(resultados, list)
-    assert len(resultados) == 0
 

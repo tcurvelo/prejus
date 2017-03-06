@@ -37,7 +37,7 @@ Instalando::
 
 Rodando os testes::
 
-    pip install pytest
+    pip install pytest mock
     pytest
 
 
