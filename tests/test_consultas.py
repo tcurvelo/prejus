@@ -48,23 +48,23 @@ def testa_prepara_params_para_consulta():
 
 
 def testa_ordem_dos_campos_do_resultado():
-    expected = despesas.Despesa(
-        data=date(2013, 7, 1),
-        documento='2013OB802053',
-        origem='2013NE000065',
-        especie=None,
-        orgaoSuperior='JUSTICA DO TRABALHO',
-        unidade='TRIBUNAL REGIONAL DO TRABALHO DA 13A. REGIAO',
-        favorecido='ANA PAULA AZEVEDO SA CAMPOS PORTO',
-        gestora='TRIBUNAL REGIONAL DO TRABALHO DA 13A.REGIAO',
-        fase='Pagamento',
-        valor=Decimal('3946.38'),
-        elemento='DIARIAS - PESSOAL CIVIL',
-        tipoDocumento=u'Ordem Banc\xe1ria (OB)',
-        codGestao='00001',
-        codGestora='080005',
-        evento='531335',
-    )
+    expected = {
+        'data': date(2013, 7, 1),
+        'documento': '2013OB802053',
+        'origem': '2013NE000065',
+        'especie': None,
+        'orgaoSuperior': 'JUSTICA DO TRABALHO',
+        'unidade': 'TRIBUNAL REGIONAL DO TRABALHO DA 13A. REGIAO',
+        'favorecido': 'ANA PAULA AZEVEDO SA CAMPOS PORTO',
+        'gestora': 'TRIBUNAL REGIONAL DO TRABALHO DA 13A.REGIAO',
+        'fase': 'Pagamento',
+        'valor': Decimal('3946.38'),
+        'elemento': 'DIARIAS - PESSOAL CIVIL',
+        'tipoDocumento': u'Ordem Banc\xe1ria (OB)',
+        'codGestao': '00001',
+        'codGestora': '080005',
+        'evento': '531335',
+    }
 
     resultados = despesas.lista_resultados(response)
     assert resultados[0] == expected
@@ -82,7 +82,11 @@ def testa_lista_resultados_vazia():
 
 
 def testa_totaliza_valor():
-    total = despesas.totaliza_valor(despesas.lista_resultados(response))
+    from functools import reduce
+    total = reduce(
+        lambda a, b: a + b,
+        map(lambda x: x['valor'], despesas.lista_resultados(response))
+    )
     assert total == Decimal("73718.72")
 
 
@@ -107,7 +111,7 @@ def testa_pega_diarias():
     assert len(resultados) == total
 
     diarias_filtradas = filter(
-        lambda x: x.elemento == enums.Elemento.DIARIAS_CIVIL.label,
+        lambda x: x['elemento'] == enums.Elemento.DIARIAS_CIVIL.label,
         resultados
     )
 
@@ -115,7 +119,7 @@ def testa_pega_diarias():
     assert len(list(diarias_filtradas)) == total
 
     pagamentos_filtrados = filter(
-        lambda x: x.fase == enums.Fase.PAGAMENTO.label,
+        lambda x: x['fase'] == enums.Fase.PAGAMENTO.label,
         resultados
     )
 

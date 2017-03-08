@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from collections import namedtuple
 from datetime import date, datetime
 from decimal import Decimal
 from functools import reduce
@@ -15,21 +14,21 @@ import time
 URL_BASE = 'http://www.portaltransparencia.jus.br/portaltransparencia/despesas/rLista.php'
 
 
-Despesa = namedtuple(
-    "Despesa",
-    """ data documento origem especie orgaoSuperior unidade favorecido gestora
-        fase valor elemento tipoDocumento codGestao codGestora evento
-    """
-)
+HEADERS = [
+   'data', 'documento', 'origem', 'especie', 'orgaoSuperior', 'unidade',
+   'favorecido', 'gestora', 'fase', 'valor', 'elemento', 'tipoDocumento',
+   'codGestao', 'codGestora', 'evento'
+]
 
 
-def prepara_params(inicio=date.today(), fim=date.today(),
-                fase=enums.Fase.PAGAMENTO,
-                orgaoSuperior=enums.OrgaoSuperior.TODOS,
-                unidade=enums.Unidade.TODOS,
-                elemento=enums.Elemento.TODOS,
-                ):
-    params ={
+def prepara_params(
+    inicio=date.today(), fim=date.today(),
+    fase=enums.Fase.PAGAMENTO,
+    orgaoSuperior=enums.OrgaoSuperior.TODOS,
+    unidade=enums.Unidade.TODOS,
+    elemento=enums.Elemento.TODOS,
+    ):
+    return {
         'periodoInicio': inicio.strftime('%d/%m/%Y'),
         'periodoFim': fim.strftime('%d/%m/%Y'),
         'faseDespesa': fase.cod,
@@ -40,46 +39,30 @@ def prepara_params(inicio=date.today(), fim=date.today(),
         'nd': str(int(time.time()*1000)),
     }
 
-    return params
-
-
-def totaliza_valor(resultados):
-    return reduce(
-        lambda x, y: x + y,
-        map(lambda x: x.valor, resultados)
-    )
-
 
 def lista_resultados(text):
+    result = []
+
     try:
-        lista = ET.fromstring(text)
-        return [
-            Despesa(
-                data=datetime.strptime(
-                    nodo.find("data").text,
-                    '%d/%m/%Y'
-                ).date(),
-                documento=re.search(
-                    ">(.*?)<",
-                    nodo.find("documento").text
-                ).group(1),
-                origem=nodo.find("origem").text,
-                especie=nodo.find("especie").text,
-                orgaoSuperior=nodo.find("orgaoSuperior").text,
-                unidade=nodo.find("unidade").text,
-                favorecido=nodo.find("favorecido").text,
-                gestora=nodo.find("gestora").text,
-                fase=nodo.find("fase").text,
-                valor=Decimal(nodo.find("valor").text),
-                elemento=nodo.find("elemento").text,
-                tipoDocumento=nodo.find("tipoDocumento").text,
-                codGestao=nodo.find("codGestao").text,
-                codGestora=nodo.find("codGestora").text,
-                evento=nodo.find("evento").text,
-            ) for nodo in lista
-        ]
-    except ET.ParseError as e:
-        return []
+        document = ET.fromstring(text)
+    except ET.ParseError:
+        return result
+
+    for node in document:
+        despesa = dict()
+        for header in HEADERS:
+            despesa[header] = node.find(header).text
+
+        if not despesa['data'] or not despesa['documento']:
+            continue
+
+        despesa['data'] = datetime.strptime(despesa['data'], '%d/%m/%Y').date()
+        despesa['documento'] = re.search('>(.*?)<', despesa['documento']).group(1)
+        despesa['valor'] = Decimal(despesa['valor'])
+
+        result.append(despesa)
+
+    return result
 
 
 def salva_csv(resultados, arquivo="resultados.csv"):
