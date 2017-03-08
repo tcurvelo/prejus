@@ -21,7 +21,18 @@ def validate_dates(ctx, param, value):
         return datetime.strptime(value, '%d-%m-%Y').date()
     except TypeError as error:
         raise click.BadParameter(
-            '"{}" não um valor válido. Use "dd-mm-aaaa".'.format(value))
+            '"{}" não é um valor válido. Use "dd-mm-aaaa".'.format(value))
+
+def validate_orgao(ctx, param, value):
+    try:
+        orgao = prejus.OrgaoSuperior[value]
+    except KeyError:
+        try:
+            orgao = prejus.Unidade[value]
+        except KeyError:
+            raise click.BadParameter(
+                '"{}" não é um valor válido para {}.'.format(value, param))
+    return orgao
 
 
 @click.command()
@@ -33,7 +44,7 @@ def validate_dates(ctx, param, value):
               help='Elemento de despesa.')
 @click.option('--fase', callback=validate_options, default='EMPENHO',
               help='Fase da despesa.')
-@click.argument('orgao')
+@click.argument('orgao', callback=validate_orgao)
 def cli(inicio, fim, elemento, fase, orgao):
     '''
     Consulta despesas do Judiciário Brasileiro, no Portal da Transparência.
