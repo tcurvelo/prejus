@@ -1,4 +1,4 @@
-from .despesas import consulta
+from .despesas import consulta, HEADERS
 from .enums import (
     Elemento,
     Fase,

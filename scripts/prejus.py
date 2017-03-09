@@ -35,6 +35,12 @@ def validate_orgao(ctx, param, value):
     return orgao
 
 
+def csvify(listrow):
+    return ','.join([
+        ('"{}"' if ' ' in str(col) else '{}').format(col) for col in listrow
+    ])
+
+
 @click.command()
 @click.option('--inicio', callback=validate_dates,
               help='Data de início da consulta.')
@@ -54,3 +60,7 @@ def cli(**kwargs):
     kwargs = {key: value for key, value in kwargs.items() if value}
     results = prejus.consulta(**kwargs)
 
+    if results:
+        click.echo(csvify(prejus.HEADERS))
+        for row in results:
+            click.echo(csvify(row.values()))
