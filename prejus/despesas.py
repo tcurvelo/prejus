@@ -5,7 +5,6 @@ from functools import reduce
 from prejus import enums
 from xml.etree import cElementTree as ET
 
-import csv
 import re
 import requests
 import time
@@ -63,23 +62,6 @@ def lista_resultados(text):
         result.append(despesa)
 
     return result
-
-
-def salva_csv(resultados, arquivo="resultados.csv"):
-
-    cabecalho = [
-        'data', 'documento', 'origem', 'especie', 'orgaoSuperior', 'unidade',
-        'favorecido', 'gestora', 'fase', 'valor', 'elemento', 'tipoDocumento',
-        'codGestao', 'codGestora', 'evento'
-    ]
-
-    # abre o arquivo para escrita, com buffer de linha
-    with open(arquivo, "w", 1) as csvfile:
-        writer = csv.writer(
-            csvfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL
-        )
-        writer.writerow(cabecalho)
-        writer.writerows(resultados)
 
 
 def consulta(**kw):
