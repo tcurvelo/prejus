@@ -19,7 +19,7 @@ def testa_indicando_um_orgao():
     result = runner.invoke(cli, ['TRT13'])
     assert result.exit_code == 0
 
-#FIXME:
+
 def testa_validacoes_das_opcoes():
     args = [
         '--inicio', '01-01-2017',
@@ -36,6 +36,10 @@ def testa_validacoes_das_opcoes():
         prejus.Unidade.TRT13,
         ''
     ]
-    result = runner.invoke(cli, args)
-    assert result.output == '\n'.join(map(str, expected))
+
+    consulta_mock = lambda **kw: '\n'.join([str(i) for i in kw.values()])
+    with mock.patch('scripts.prejus.csv_dump', side_effect=click.echo) as e:
+        with mock.patch('prejus.consulta', side_effect=consulta_mock) as q:
+            result = runner.invoke(cli, args)
+            assert result.output == '\n'.join(map(str, expected))
 

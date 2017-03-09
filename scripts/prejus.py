@@ -19,16 +19,16 @@ def validate_dates(ctx, param, value):
         return param.default
     try:
         return datetime.strptime(value, '%d-%m-%Y').date()
-    except TypeError as error:
+    except (TypeError, ValueError) as error:
         raise click.BadParameter(
             '"{}" não é um valor válido. Use "dd-mm-aaaa".'.format(value))
 
 def validate_orgao(ctx, param, value):
     try:
-        orgao = prejus.OrgaoSuperior[value]
+        orgao = ('orgaoSuperior', prejus.OrgaoSuperior[value])
     except KeyError:
         try:
-            orgao = prejus.Unidade[value]
+            orgao = ('unidade', prejus.Unidade[value])
         except KeyError:
             raise click.BadParameter(
                 '"{}" não é um valor válido para {}.'.format(value, param))
@@ -36,23 +36,21 @@ def validate_orgao(ctx, param, value):
 
 
 @click.command()
-@click.option('--inicio', callback=validate_dates, default=None,
+@click.option('--inicio', callback=validate_dates,
               help='Data de início da consulta.')
-@click.option('--fim', callback=validate_dates, default=None,
+@click.option('--fim', callback=validate_dates,
               help='Data de fim da consulta.')
 @click.option('--elemento', callback=validate_options,
               help='Elemento de despesa.')
 @click.option('--fase', callback=validate_options, default='EMPENHO',
               help='Fase da despesa.')
 @click.argument('orgao', callback=validate_orgao)
-def cli(inicio, fim, elemento, fase, orgao):
+def cli(**kwargs):
     '''
     Consulta despesas do Judiciário Brasileiro, no Portal da Transparência.
     '''
-    # FIXME:
-    args = [inicio, fim, elemento, fase, orgao]
-    click.echo('\n'.join(map(str, args)))
-    # results = prejus.consulta(args)
-    # for line in prejus.csv_dump(result):
-    #   click.echo(line)
+    orgao = kwargs.pop('orgao')
+    kwargs[orgao[0]] = orgao[1]
+    kwargs = {key: value for key, value in kwargs.items() if value}
+    results = prejus.consulta(**kwargs)
 
