@@ -9,7 +9,7 @@ Utilizando
 
 Para instalar::
 
-  pip install prejus
+  pip install prejus #TODO:
 
 Usando o cliente de linha de comando::
 
@@ -25,7 +25,6 @@ Usando dentro de outra app::
         unidade = prejus.Unidade.TRT13,
         elemento = prejus.Elemento.DIARIAS_CIVIL,
     )
-    despesas.salva_csv(resultados, "diarias.csv")
 
 
 Desenvolvendo
